@@ -1,14 +1,31 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Users, Activity, Layers, CheckSquare } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Users,
+  Activity,
+  Layers,
+  CheckSquare,
+  LayoutDashboard,
+  Compass,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useSession } from "@/lib/auth-client";
 
 export function HeroSection() {
+  const [mounted, setMounted] = useState(false);
+  const { data: session, isPending } = useSession();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <section className="relative overflow-hidden pt-2 pb-10 md:pt-4 md:pb-12 lg:pt-6 lg:pb-16 min-h-0 lg:min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center">
+    <section className="relative overflow-hidden pt-16 sm:pt-2 md:pt-4 lg:pt-6 pb-10 md:pb-12 lg:pb-16 min-h-0 lg:min-h-[calc(100vh-4rem)] flex flex-col justify-center items-center">
       {/* Background Decor Ambient Glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-500/15 dark:bg-indigo-600/20 blur-[120px] rounded-full pointer-events-none -z-10 animate-pulse-glow" />
       <div className="absolute top-10 right-10 w-[300px] h-[300px] bg-purple-500/10 dark:bg-purple-600/15 blur-[100px] rounded-full pointer-events-none -z-10" />
@@ -36,21 +53,40 @@ export function HeroSection() {
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 w-full sm:w-auto">
-            <Button
-              href="/login"
-              variant="primary"
-              size="lg"
-              className="w-full sm:w-auto"
-              rightIcon={<ArrowRight className="w-4 h-4" />}
-            >
-              Get Started
-            </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 pt-2 w-full sm:w-auto">
+            {!mounted || isPending ? (
+              /* Skeleton Loading State for CTA Button */
+              <div className="w-[75%] max-w-[240px] sm:w-52 h-9 sm:h-11 rounded-full bg-slate-200/80 dark:bg-slate-800/80 animate-pulse border border-slate-300/40 dark:border-slate-700/40" />
+            ) : session?.user ? (
+              /* Authenticated Logged In CTA */
+              <Button
+                href="/dashboard"
+                variant="primary"
+                size="md"
+                className="w-[75%] max-w-[240px] sm:w-auto py-2 sm:py-2.5 text-xs sm:text-sm"
+                rightIcon={<LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+              >
+                Continue to Dashboard
+              </Button>
+            ) : (
+              /* Guest Logged Out CTA */
+              <Button
+                href="/register"
+                variant="primary"
+                size="md"
+                className="w-[75%] max-w-[240px] sm:w-auto py-2 sm:py-2.5 text-xs sm:text-sm"
+                rightIcon={<ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+              >
+                Get Started
+              </Button>
+            )}
+
             <Button
               href="/features"
               variant="outline"
-              size="lg"
-              className="w-full sm:w-auto"
+              size="md"
+              className="w-[75%] max-w-[240px] sm:w-auto py-2 sm:py-2.5 text-xs sm:text-sm"
+              leftIcon={<Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-500" />}
             >
               Explore Features
             </Button>
