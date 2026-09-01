@@ -272,16 +272,16 @@ export function Navbar() {
                   animate={{ x: 0 }}
                   exit={{ x: "100%" }}
                   transition={{ type: "spring", damping: 28, stiffness: 260 }}
-                  className="lg:hidden fixed top-0 right-0 bottom-0 h-screen w-[270px] sm:w-[290px] max-w-[85vw] z-[9999] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200/80 dark:border-slate-800 shadow-2xl p-4 sm:p-5 flex flex-col justify-between overflow-hidden"
+                  className="lg:hidden fixed inset-y-0 right-0 h-[100dvh] w-[270px] sm:w-[290px] max-w-[85vw] z-[9999] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-l border-slate-200/80 dark:border-slate-800 shadow-2xl p-3.5 sm:p-5 flex flex-col justify-between overflow-hidden"
                 >
                   {/* Drawer Brand Header (Fixed Top) */}
-                  <div className="shrink-0 flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-slate-800">
+                  <div className="shrink-0 flex items-center justify-between pb-2.5 border-b border-slate-200/80 dark:border-slate-800">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-sm shadow-indigo-500/25">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-sm shadow-indigo-500/25">
                         <Layers className="w-4 h-4" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-base tracking-tight text-slate-900 dark:text-white leading-none">
+                        <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white leading-none">
                           Collab<span className="gradient-text">Hub</span>
                         </span>
                         <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 pt-0.5">
@@ -300,8 +300,8 @@ export function Navbar() {
                     </button>
                   </div>
 
-                  {/* Navigation Route Links (Independently Scrollable Center Area) */}
-                  <div className="flex-1 overflow-y-auto py-3 space-y-1 my-1 pr-1 custom-scrollbar">
+                  {/* Navigation Route Links (Independently Scrollable Center Area - min-h-0 ensures flex container shrinking) */}
+                  <div className="flex-1 min-h-0 overflow-y-auto py-2 space-y-1 my-1 pr-1 custom-scrollbar">
                     <div className="px-1 pb-1">
                       <span className="text-[10px] font-extrabold tracking-wider uppercase text-slate-400 dark:text-slate-500">
                         Navigation
@@ -350,12 +350,12 @@ export function Navbar() {
 
                   {/* Bottom Action Footer (Fixed Bottom) */}
                   {session?.user ? (
-                    <div className="shrink-0 pt-3 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
+                    <div className="shrink-0 pt-2.5 border-t border-slate-200/80 dark:border-slate-800 space-y-2">
                       {/* Compact User Info Glass Card */}
-                      <div className="p-2.5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between gap-2 shadow-xs">
+                      <div className="p-2 sm:p-2.5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between gap-2 shadow-xs">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div className="relative shrink-0">
-                            <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs overflow-hidden shadow-sm ring-2 ring-indigo-500/20">
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs overflow-hidden shadow-sm ring-2 ring-indigo-500/20">
                               {session.user.image ? (
                                 <img
                                   src={session.user.image}
@@ -394,8 +394,8 @@ export function Navbar() {
                       </Button>
                     </div>
                   ) : (
-                    <div className="shrink-0 pt-3 border-t border-slate-200/80 dark:border-slate-800 space-y-2">
-                      <div className="px-1 pb-1">
+                    <div className="shrink-0 pt-2.5 border-t border-slate-200/80 dark:border-slate-800 space-y-1.5">
+                      <div className="px-1 pb-0.5">
                         <span className="text-[10px] font-extrabold tracking-wider uppercase text-slate-400 dark:text-slate-500">
                           Account Access
                         </span>
@@ -404,7 +404,7 @@ export function Navbar() {
                         href="/login"
                         variant="outline"
                         size="sm"
-                        className="w-full justify-center text-xs py-2 font-semibold"
+                        className="w-full justify-center text-xs py-1.5 font-semibold"
                         leftIcon={<LogIn className="w-3.5 h-3.5" />}
                       >
                         Login
@@ -413,7 +413,7 @@ export function Navbar() {
                         href="/register"
                         variant="primary"
                         size="sm"
-                        className="w-full justify-center text-xs py-2 font-semibold shadow-md shadow-indigo-500/20"
+                        className="w-full justify-center text-xs py-1.5 font-semibold shadow-md shadow-indigo-500/20"
                         rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
                       >
                         Get Started
