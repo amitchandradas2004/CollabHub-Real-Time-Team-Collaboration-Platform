@@ -25,6 +25,7 @@ export default function TeamMemberNotificationsPage() {
   const [loading, setLoading] = useState(true);
 
   const currentUserId = (session?.user as any)?._id || session?.user?.id;
+  const currentUserEmail = session?.user?.email;
   const currentUserRole = (session?.user as any)?.role || "teamMember";
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function TeamMemberNotificationsPage() {
         const res = await fetch(`${backendUrl}/api/notifications`, {
           headers: {
             "x-user-id": currentUserId || "",
+            "x-user-email": currentUserEmail || "",
             "x-user-role": currentUserRole,
           },
         });
@@ -49,7 +51,7 @@ export default function TeamMemberNotificationsPage() {
     }
 
     fetchNotifications();
-  }, [currentUserId, currentUserRole]);
+  }, [currentUserId, currentUserEmail, currentUserRole]);
 
   // Real-time Socket.io Notification Listener
   useEffect(() => {
@@ -79,6 +81,7 @@ export default function TeamMemberNotificationsPage() {
         headers: {
           "Content-Type": "application/json",
           "x-user-id": currentUserId || "",
+          "x-user-email": currentUserEmail || "",
           "x-user-role": currentUserRole,
         },
         body: JSON.stringify({ read: !currentRead }),
@@ -101,6 +104,7 @@ export default function TeamMemberNotificationsPage() {
         method: "PATCH",
         headers: {
           "x-user-id": currentUserId || "",
+          "x-user-email": currentUserEmail || "",
           "x-user-role": currentUserRole,
         },
       });

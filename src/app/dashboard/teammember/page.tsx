@@ -58,6 +58,7 @@ export default function TeamMemberDashboardPage() {
         const backendUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
         const headers = {
           "x-user-id": (session?.user as any)?._id || session?.user?.id || "",
+          "x-user-email": session?.user?.email || "",
           "x-user-role": (session?.user as any)?.role || "teamMember",
         };
 
@@ -248,8 +249,8 @@ export default function TeamMemberDashboardPage() {
                               task.status === "Completed"
                                 ? "success"
                                 : task.status === "In Progress"
-                                ? "warning"
-                                : "neutral"
+                                  ? "warning"
+                                  : "neutral"
                             }
                             size="sm"
                           >
@@ -260,8 +261,8 @@ export default function TeamMemberDashboardPage() {
                               task.priority === "High"
                                 ? "danger"
                                 : task.priority === "Medium"
-                                ? "primary"
-                                : "neutral"
+                                  ? "primary"
+                                  : "neutral"
                             }
                             size="sm"
                           >
@@ -294,11 +295,10 @@ export default function TeamMemberDashboardPage() {
                     {notifications.slice(0, 5).map((notif) => (
                       <div
                         key={notif._id}
-                        className={`p-3 rounded-2xl border text-xs space-y-1 ${
-                          notif.read
+                        className={`p-3 rounded-2xl border text-xs space-y-1 ${notif.read
                             ? "bg-slate-50/50 dark:bg-slate-900/40 border-slate-200/50 dark:border-slate-800/50 text-slate-600 dark:text-slate-400"
                             : "bg-indigo-50/80 dark:bg-indigo-950/40 border-indigo-200/80 dark:border-indigo-900/50 font-medium text-slate-900 dark:text-white"
-                        }`}
+                          }`}
                       >
                         <p>{notif.message}</p>
                         <span className="text-[10px] text-slate-400 block">

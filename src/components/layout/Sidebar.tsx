@@ -23,6 +23,7 @@ import {
 import { useSession, signOut } from "@/lib/auth-client";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { LogoutModal } from "@/components/ui/LogoutModal";
+import { getSocket } from "@/lib/socket-client";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -31,6 +32,12 @@ export function Sidebar() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const currentUserId = (session?.user as any)?._id || session?.user?.id;
+  const currentUserEmail = session?.user?.email;
+  const userRole = (session?.user as any)?.role || "teamMember";
+  const isAdmin = userRole === "admin";
 
   useEffect(() => {
     setMounted(true);
@@ -40,16 +47,53 @@ export function Sidebar() {
     setMobileDrawerOpen(false);
   }, [pathname]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const userRole = (session?.user as any)?.role || "teamMember";
-  const isAdmin = userRole === "admin";
+  // Fetch unread notifications count & setup real-time socket listener
+  useEffect(() => {
+    if (!currentUserId && !currentUserEmail) return;
+
+    async function fetchUnreadCount() {
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+        const res = await fetch(`${backendUrl}/api/notifications`, {
+          headers: {
+            "x-user-id": currentUserId || "",
+            "x-user-email": currentUserEmail || "",
+            "x-user-role": userRole,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadCount(data.unreadCount || 0);
+        }
+      } catch (err) {
+        console.error("Sidebar unread notifications count fetch error:", err);
+      }
+    }
+
+    fetchUnreadCount();
+
+    const socket = getSocket();
+    if (currentUserId) {
+      socket.emit("join-user", currentUserId);
+    }
+
+    const handleNewNotif = () => {
+      setUnreadCount((prev) => prev + 1);
+    };
+
+    socket.on("new-notification", handleNewNotif);
+
+    return () => {
+      socket.off("new-notification", handleNewNotif);
+    };
+  }, [currentUserId, currentUserEmail, userRole, pathname]);
 
   // Dashboard routes
   const teamMemberNav = [
     { name: "Dashboard", href: "/dashboard/teammember", icon: LayoutDashboard },
     { name: "Projects", href: "/dashboard/teammember/projects", icon: FolderKanban },
     { name: "My Tasks", href: "/dashboard/teammember/tasks", icon: CheckSquare },
-    { name: "Notifications", href: "/dashboard/teammember/notifications", icon: Bell },
+    { name: "Notifications", href: "/dashboard/teammember/notifications", icon: Bell, badge: unreadCount },
   ];
 
   const adminNav = [
@@ -57,6 +101,7 @@ export function Sidebar() {
     { name: "User Management", href: "/dashboard/admin/users", icon: Users },
     { name: "Project Management", href: "/dashboard/admin/projects", icon: FolderKanban },
     { name: "Task Management", href: "/dashboard/admin/tasks", icon: CheckSquare },
+    { name: "Notifications", href: "/dashboard/teammember/notifications", icon: Bell, badge: unreadCount },
   ];
 
   const navLinks = isAdmin ? adminNav : teamMemberNav;
@@ -163,11 +208,18 @@ export function Sidebar() {
                     />
                     <span>{item.name}</span>
                   </div>
-                  <ChevronRight
-                    className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity ${
-                      isActive ? "opacity-100 text-white" : "text-slate-400"
-                    }`}
-                  />
+                  <div className="flex items-center gap-1.5">
+                    {item.badge !== undefined && item.badge > 0 && (
+                      <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-500 text-white shadow-xs">
+                        {item.badge}
+                      </span>
+                    )}
+                    <ChevronRight
+                      className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity ${
+                        isActive ? "opacity-100 text-white" : "text-slate-400"
+                      }`}
+                    />
+                  </div>
                 </Link>
               );
             })}
@@ -298,7 +350,14 @@ export function Sidebar() {
                             <Icon className="w-4 h-4" />
                             <span>{item.name}</span>
                           </div>
-                          {isActive && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                          <div className="flex items-center gap-1.5">
+                            {item.badge !== undefined && item.badge > 0 && (
+                              <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-500 text-white shadow-xs">
+                                {item.badge}
+                              </span>
+                            )}
+                            {isActive && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                          </div>
                         </Link>
                       );
                     })}

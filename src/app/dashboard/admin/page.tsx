@@ -47,6 +47,7 @@ export default function AdminDashboardPage() {
         const backendUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
         const headers = {
           "x-user-id": currentUserId || "",
+          "x-user-email": session?.user?.email || "",
           "x-user-role": "admin",
         };
 
