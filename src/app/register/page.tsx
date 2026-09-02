@@ -109,8 +109,8 @@ export default function RegisterPage() {
       } else {
         setIsSuccess(true);
         setTimeout(() => {
-          router.push("/");
-        }, 1500);
+          window.location.href = "/dashboard/teammember";
+        }, 1200);
       }
     } catch (err: any) {
       // console.error("Registration Exception:", err);

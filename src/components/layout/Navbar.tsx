@@ -63,7 +63,12 @@ export function Navbar() {
     ? [
         ...baseNavLinks,
         { name: "Profile", href: "/profile", icon: User, iconColor: "text-emerald-500" },
-        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, iconColor: "text-purple-500" },
+        {
+          name: (session.user as any)?.role === "admin" ? "Admin Console" : "Dashboard",
+          href: (session.user as any)?.role === "admin" ? "/dashboard/admin" : "/dashboard/teammember",
+          icon: LayoutDashboard,
+          iconColor: "text-purple-500",
+        },
       ]
     : baseNavLinks;
 
@@ -185,12 +190,12 @@ export function Navbar() {
                             </Link>
 
                             <Link
-                              href="/dashboard"
+                              href={(session?.user as any)?.role === "admin" ? "/dashboard/admin" : "/dashboard/teammember"}
                               onClick={() => setProfileDropdownOpen(false)}
                               className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 rounded-xl transition-colors"
                             >
                               <LayoutDashboard className="w-4 h-4 text-purple-500" />
-                              <span>Dashboard</span>
+                              <span>{(session?.user as any)?.role === "admin" ? "Admin Console" : "Dashboard"}</span>
                             </Link>
                           </div>
 

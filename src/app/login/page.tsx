@@ -65,9 +65,11 @@ export default function LoginPage() {
         setIsLoading(false);
       } else {
         setIsSuccess(true);
+        const userRole = (data?.user as any)?.role || "teamMember";
+        const redirectPath = userRole === "admin" ? "/dashboard/admin" : "/dashboard/teammember";
         setTimeout(() => {
-          window.location.href = "/";
-        }, 1200);
+          window.location.href = redirectPath;
+        }, 1000);
       }
     } catch (err: any) {
       // console.error("Login Exception:", err);

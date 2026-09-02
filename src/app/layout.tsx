@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { PageTransition } from "@/components/layout/PageTransition";
+import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -41,11 +39,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-indigo-500 selection:text-white">
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1 w-full pt-14 sm:pt-16">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Footer />
+          <ConditionalLayout>{children}</ConditionalLayout>
         </ThemeProvider>
       </body>
     </html>

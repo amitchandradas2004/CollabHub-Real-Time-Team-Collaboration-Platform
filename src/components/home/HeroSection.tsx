@@ -60,13 +60,13 @@ export function HeroSection() {
             ) : session?.user ? (
               /* Authenticated Logged In CTA */
               <Button
-                href="/dashboard"
+                href={(session.user as any)?.role === "admin" ? "/dashboard/admin" : "/dashboard/teammember"}
                 variant="primary"
                 size="md"
                 className="w-[75%] max-w-[240px] sm:w-auto py-2 sm:py-2.5 text-xs sm:text-sm"
                 rightIcon={<LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
               >
-                Continue to Dashboard
+                {(session.user as any)?.role === "admin" ? "Continue to Admin Console" : "Continue to Dashboard"}
               </Button>
             ) : (
               /* Guest Logged Out CTA */
